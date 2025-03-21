@@ -324,42 +324,12 @@
   </head>
   <body>
     <!-- Script de verificação de autenticação -->
-    <script>
-      // Função para verificar autenticação
-      async function checkAuth() {
-        try {
-          const response = await fetch('https://api.superproclube.com.br/api/validateUser', {
-            method: 'GET',
-            credentials: 'include', // Importante para enviar cookies
-            headers: {
-              'Cache-Control': 'no-cache' // Evita cache da resposta
-            }
-          });
-          
-          if (!response.ok) {
-            throw new Error('Erro na verificação de autenticação');
-          }
-          
-          const data = await response.json();
-          
-          if (!data.valid) {
-            // Se não estiver autenticado, redireciona para a página de login
-            window.location.href = 'index2.html';
-            return false;
-          }
-          
-          return true;
-        } catch (error) {
-          console.error('Erro ao verificar autenticação:', error);
-          // Em caso de erro, também redireciona para o login
-          window.location.href = 'index2.html';
-          return false;
-        }
-      }
+    <script type="module">
+      import { protectRoute } from './js/auth.js';
 
-      // Verifica autenticação assim que a página carregar
+      // Verificar autenticação ao carregar a página
       document.addEventListener('DOMContentLoaded', async () => {
-        const isAuthenticated = await checkAuth();
+        const isAuthenticated = await protectRoute();
         if (!isAuthenticated) {
           return; // Não continua carregando o resto da página se não estiver autenticado
         }
@@ -368,7 +338,7 @@
         initializePage();
       });
 
-      // Função para inicializar a página (movida para fora do DOMContentLoaded)
+      // Função para inicializar a página
       function initializePage() {
         // Aqui vai todo o código de inicialização da página
         // ... existing code ...
